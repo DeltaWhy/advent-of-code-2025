@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby
 def parse(input)
   input.split(",").map(&:strip).map { |x| x.split("-").map { |x| x.to_i } }
 end
@@ -44,5 +43,9 @@ def part_two(input)
 end
 
 input = ARGF.read
-puts part_one(input)
-puts part_two(input)
+puts "===== Part 1 ====="
+puts "\nResult: #{part_one(input)}"
+puts "\n\n"
+puts "===== Part 2 ====="
+puts "\nResult: #{part_two(input)}"
+
