@@ -19,9 +19,20 @@ end
 
 def part_two(input)
   res = 0
-  input = p parse(input)
+  input = parse(input)
   input.each do |line|
-
+    left = 0
+    right = line.length - 12
+    joltage = ''
+    begin
+      str = line[left..right]
+      digit, pos = str.each_char.each_with_index.max_by { _1[0] }
+      joltage += digit
+      # puts "left: #{left}\tright: #{right}\tline: #{line}\tstr: #{str}\tjoltage: #{joltage}"
+      left = left + pos + 1
+      right += 1
+    end while right < line.length
+    res += joltage.to_i
   end
   res
 end
