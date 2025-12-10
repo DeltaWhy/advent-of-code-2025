@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    algorithms (1.1.0)
     ast (2.4.3)
     json (2.17.1)
     language_server-protocol (3.17.0.5)
@@ -54,6 +55,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  algorithms (~> 1.1)
   matrix (~> 0.4.3)
   standard (~> 1.52)
 

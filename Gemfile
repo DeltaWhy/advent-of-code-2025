@@ -7,3 +7,5 @@ source "https://rubygems.org"
 gem "standard", "~> 1.52"
 
 gem "matrix", "~> 0.4.3"
+
+gem "algorithms", "~> 1.1"
