@@ -1,6 +1,6 @@
 require 'ap'
 require 'matrix'
-require 'algorithms'
+require 'open3'
 
 class Machine < Data.define(:goal, :buttons, :joltages)
   def inspect
@@ -78,29 +78,37 @@ def parse_two(input)
       end
       v
     end
-    buttons = Matrix[*buttons]
     Machine2.new(buttons:, joltages:)
   end
 end
 
-def solve_two(goal, buttons)
-  max_presses = buttons.row_vectors.map do |b|
-    goal.zip(b).map { |x,y| x * y }.filter { _1 > 0 }.min
-  end
-  p [goal, max_presses]
-  0
-end
-
 def part_two(input)
-  total = 0
   machines = parse_two(input)
-  [pp(machines[0])].each do |m|
-    res = solve_two(m.joltages, m.buttons)
-    # ??
-    p res
-    total += res
-  end
-  total
+  machines.map do |m|
+    smt = ""
+    m.buttons.each_index do |i|
+      smt += "(declare-const a#{i} Int)\n"
+      smt += "(assert (>= a#{i} 0))\n"
+    end
+    smt += "(minimize (+ #{m.buttons.each_index.map { |i| "a#{i}" }.join(" ")}))\n"
+    m.joltages.each_with_index do |v, i|
+      idxs = m.buttons.each_with_index.filter { |b, _| b[i] > 0 }.map { |b, j| "a#{j}" }
+      smt += "(assert (= #{v} (+ #{idxs.join(" ")})))\n"
+    end
+    smt += "(check-sat)\n(get-objectives)\n"
+    # puts smt
+
+    res = Open3.popen3("z3 -smt2 -in") do |stdin, stdout, stderr, wait_thr|
+      stdin.puts smt
+      stdin.close
+      stdout.read
+    end
+    res
+
+    raise if !res.start_with?("sat\n")
+    
+    res.match(/(\d+)\)\n\)\n/)[1].to_i
+  end.sum
 end
 
 input = ARGF.read
